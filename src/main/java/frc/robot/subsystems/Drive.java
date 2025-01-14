@@ -132,10 +132,11 @@ public class Drive extends SubsystemBase {
     RIGHT_BACK_DRIVE_SPEED_MOTOR.set(speed);
   }
 
-  public void drive(double w, Rotation2d targetAngle) {
+  public void drive(double v1, double v2, double w) {
+    w += getGyroAngle();
     List<Double> v = new ArrayList<>();
-    v.add(1.0);
-    v.add(1.0);
+    v.add(v1);
+    v.add(v2);
     List<Double> m1 = new ArrayList<>();
     List<Double> m2 = new ArrayList<>();
     List<Double> m3 = new ArrayList<>();

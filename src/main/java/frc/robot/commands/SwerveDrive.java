@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import frc.robot.subsystems.Drive;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -36,8 +37,7 @@ public class SwerveDrive extends Command {
   @Override
   public void execute() {
     angle = new Rotation2d(m_subsystem.getGyroAngle());
-    m_subsystem.drive(m_driverController.getLeftY(),
-        new Rotation2d(angle.getRadians() + m_driverController.getRightX()));
+    m_subsystem.drive(m_driverController.getRightX(), m_driverController.getRightY(), m_driverController.getLeftY());
   }
 
   // Called once the command ends or is interrupted.
