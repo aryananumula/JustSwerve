@@ -39,7 +39,6 @@ public class Drive extends SubsystemBase {
   public static CANcoder LEFT_BACK_DRIVE_DISTANCE_ENCODER;
   public static CANcoder RIGHT_FRONT_DRIVE_DISTANCE_ENCODER;
   public static CANcoder RIGHT_BACK_DRIVE_DISTANCE_ENCODER;
-  // public static MedianPIDSource DRIVE_DISTANCE_ENCODERS;
 
   public static CANcoder LEFT_FRONT_DRIVE_DIRECTION_ENCODER;
   public static CANcoder LEFT_BACK_DRIVE_DIRECTION_ENCODER;
@@ -62,15 +61,15 @@ public class Drive extends SubsystemBase {
     RIGHT_BACK_DRIVE_DIRECTION_MOTOR = new TalonFX(Constants.kBackRightDriveMotorId);
 
     // Encoders
-    LEFT_FRONT_DRIVE_DISTANCE_ENCODER = new CANcoder(Constants.kFrontLeftEncoderId, Constants.kCANbusName);
-    LEFT_BACK_DRIVE_DISTANCE_ENCODER = new CANcoder(Constants.kBackLeftEncoderId, Constants.kCANbusName);
-    RIGHT_FRONT_DRIVE_DISTANCE_ENCODER = new CANcoder(Constants.kFrontRightEncoderId, Constants.kCANbusName);
-    RIGHT_BACK_DRIVE_DISTANCE_ENCODER = new CANcoder(Constants.kBackRightEncoderId, Constants.kCANbusName);
+    LEFT_FRONT_DRIVE_DISTANCE_ENCODER = new CANcoder(Constants.kFrontLeftEncoderId);
+    LEFT_BACK_DRIVE_DISTANCE_ENCODER = new CANcoder(Constants.kBackLeftEncoderId);
+    RIGHT_FRONT_DRIVE_DISTANCE_ENCODER = new CANcoder(Constants.kFrontRightEncoderId);
+    RIGHT_BACK_DRIVE_DISTANCE_ENCODER = new CANcoder(Constants.kBackRightEncoderId);
 
-    LEFT_FRONT_DRIVE_DIRECTION_ENCODER = new CANcoder(Constants.kFrontLeftEncoderId, Constants.kCANbusName);
-    LEFT_BACK_DRIVE_DIRECTION_ENCODER = new CANcoder(Constants.kBackLeftEncoderId, Constants.kCANbusName);
-    RIGHT_FRONT_DRIVE_DIRECTION_ENCODER = new CANcoder(Constants.kFrontRightEncoderId, Constants.kCANbusName);
-    RIGHT_BACK_DRIVE_DIRECTION_ENCODER = new CANcoder(Constants.kBackRightEncoderId, Constants.kCANbusName);
+    LEFT_FRONT_DRIVE_DIRECTION_ENCODER = new CANcoder(Constants.kFrontLeftEncoderId);
+    LEFT_BACK_DRIVE_DIRECTION_ENCODER = new CANcoder(Constants.kBackLeftEncoderId);
+    RIGHT_FRONT_DRIVE_DIRECTION_ENCODER = new CANcoder(Constants.kFrontRightEncoderId);
+    RIGHT_BACK_DRIVE_DIRECTION_ENCODER = new CANcoder(Constants.kBackRightEncoderId);
 
     // Gyro
     DRIVE_GYRO = new AHRS(NavXComType.kMXP_SPI);
@@ -101,19 +100,23 @@ public class Drive extends SubsystemBase {
   }
 
   public void setLeftFrontAngle(Rotation2d angle) {
-    LEFT_FRONT_DRIVE_DIRECTION_MOTOR.set(pid.calculate(getLeftFrontAngle().getRadians(), angle.getRadians()));
+    LEFT_FRONT_DRIVE_DIRECTION_MOTOR
+        .set(pid.calculate(getLeftFrontAngle().getRadians(), angle.getRadians() - getGyroAngle()));
   }
 
   public void setLeftBackAngle(Rotation2d angle) {
-    LEFT_BACK_DRIVE_DIRECTION_MOTOR.set(pid.calculate(getLeftBackAngle().getRadians(), angle.getRadians()));
+    LEFT_BACK_DRIVE_DIRECTION_MOTOR
+        .set(pid.calculate(getLeftBackAngle().getRadians(), angle.getRadians() - getGyroAngle()));
   }
 
   public void setRightFrontAngle(Rotation2d angle) {
-    RIGHT_FRONT_DRIVE_DIRECTION_MOTOR.set(pid.calculate(getRightFrontAngle().getRadians(), angle.getRadians()));
+    RIGHT_FRONT_DRIVE_DIRECTION_MOTOR
+        .set(pid.calculate(getRightFrontAngle().getRadians(), angle.getRadians() - getGyroAngle()));
   }
 
   public void setRightBackAngle(Rotation2d angle) {
-    RIGHT_BACK_DRIVE_DIRECTION_MOTOR.set(pid.calculate(getRightBackAngle().getRadians(), angle.getRadians()));
+    RIGHT_BACK_DRIVE_DIRECTION_MOTOR
+        .set(pid.calculate(getRightBackAngle().getRadians(), angle.getRadians() - getGyroAngle()));
   }
 
   public void setLeftFrontSpeed(double speed) {
@@ -133,7 +136,6 @@ public class Drive extends SubsystemBase {
   }
 
   public void drive(double v1, double v2, double w) {
-    w += getGyroAngle();
     List<Double> v = new ArrayList<>();
     v.add(v1);
     v.add(v2);
@@ -143,17 +145,33 @@ public class Drive extends SubsystemBase {
     List<Double> m4 = new ArrayList<>();
 
     List<Double> p1 = new ArrayList<>();
-    p1.add(-1.0);
-    p1.add(0.0);
+    p1.add(
+        -1.0 * Math.cos(Math.toRadians(DRIVE_GYRO.getAngle())) - 0.0 * Math.sin(Math.toRadians(DRIVE_GYRO.getAngle())));
+    p1.add(
+        -1.0 * Math.sin(Math.toRadians(DRIVE_GYRO.getAngle())) + 0.0 * Math.cos(Math.toRadians(DRIVE_GYRO.getAngle())));
     List<Double> p2 = new ArrayList<>();
     p2.add(0.0);
     p2.add(1.0);
+    p2.add(
+        0.0 * Math.cos(Math.toRadians(DRIVE_GYRO.getAngle())) - 1.0 * Math.sin(Math.toRadians(DRIVE_GYRO.getAngle())));
+    p2.add(
+        0.0 * Math.sin(Math.toRadians(DRIVE_GYRO.getAngle())) + 1.0 * Math.cos(Math.toRadians(DRIVE_GYRO.getAngle())));
     List<Double> p3 = new ArrayList<>();
     p3.add(1.0);
     p3.add(0.0);
+    p3.add(
+        1.0 * Math.cos(Math.toRadians(DRIVE_GYRO.getAngle())) - 0.0 * Math.sin(Math.toRadians(DRIVE_GYRO.getAngle())));
+    p3.add(
+        1.0 * Math.sin(Math.toRadians(DRIVE_GYRO.getAngle())) + 0.0 * Math.cos(Math.toRadians(DRIVE_GYRO.getAngle())));
     List<Double> p4 = new ArrayList<>();
     p4.add(0.0);
     p4.add(-1.0);
+    p4.add(
+        0.0 * Math.cos(Math.toRadians(DRIVE_GYRO.getAngle()))
+            - -1.0 * Math.sin(Math.toRadians(DRIVE_GYRO.getAngle())));
+    p4.add(
+        0.0 * Math.sin(Math.toRadians(DRIVE_GYRO.getAngle()))
+            + -1.0 * Math.cos(Math.toRadians(DRIVE_GYRO.getAngle())));
     m1.add(v.get(0) + w * p1.get(0));
     m1.add(v.get(1) + w * p1.get(1));
     m2.add(v.get(0) + w * p2.get(0));
@@ -167,14 +185,44 @@ public class Drive extends SubsystemBase {
         Math.max(Math.sqrt(Math.pow(m2.get(0), 2) + Math.pow(m2.get(1), 2)),
             Math.max(Math.sqrt(Math.pow(m3.get(0), 2) + Math.pow(m3.get(1), 2)),
                 Math.sqrt(Math.pow(m4.get(0), 2) + Math.pow(m4.get(1), 2)))));
-    LEFT_BACK_DRIVE_SPEED_MOTOR.set(Math.sqrt(Math.pow(m1.get(0), 2) + Math.pow(m1.get(1), 2)) / max);
-    LEFT_FRONT_DRIVE_SPEED_MOTOR.set(Math.sqrt(Math.pow(m2.get(0), 2) + Math.pow(m2.get(1), 2)) / max);
-    RIGHT_FRONT_DRIVE_SPEED_MOTOR.set(Math.sqrt(Math.pow(m3.get(0), 2) + Math.pow(m3.get(1), 2)) / max);
-    RIGHT_BACK_DRIVE_SPEED_MOTOR.set(Math.sqrt(Math.pow(m4.get(0), 2) + Math.pow(m4.get(1), 2)) / max);
-    setLeftBackAngle(new Rotation2d(Math.atan2(m1.get(1), m1.get(0))));
-    setLeftFrontAngle(new Rotation2d(Math.atan2(m2.get(1), m2.get(0))));
-    setRightFrontAngle(new Rotation2d(Math.atan2(m3.get(1), m3.get(0))));
-    setRightBackAngle(new Rotation2d(Math.atan2(m4.get(1), m4.get(0))));
+
+    double angle1 = Math.atan2(m1.get(1), m1.get(0));
+    double angle2 = Math.atan2(m2.get(1), m2.get(0));
+    double angle3 = Math.atan2(m3.get(1), m3.get(0));
+    double angle4 = Math.atan2(m4.get(1), m4.get(0));
+
+    if (Math.abs(angle1) > Math.PI / 2) {
+      angle1 = angle1 > 0 ? angle1 - Math.PI : angle1 + Math.PI;
+      LEFT_BACK_DRIVE_SPEED_MOTOR.set(-Math.sqrt(Math.pow(m1.get(0), 2) + Math.pow(m1.get(1), 2)) / max);
+    } else {
+      LEFT_BACK_DRIVE_SPEED_MOTOR.set(Math.sqrt(Math.pow(m1.get(0), 2) + Math.pow(m1.get(1), 2)) / max);
+    }
+
+    if (Math.abs(angle2) > Math.PI / 2) {
+      angle2 = angle2 > 0 ? angle2 - Math.PI : angle2 + Math.PI;
+      LEFT_FRONT_DRIVE_SPEED_MOTOR.set(-Math.sqrt(Math.pow(m2.get(0), 2) + Math.pow(m2.get(1), 2)) / max);
+    } else {
+      LEFT_FRONT_DRIVE_SPEED_MOTOR.set(Math.sqrt(Math.pow(m2.get(0), 2) + Math.pow(m2.get(1), 2)) / max);
+    }
+
+    if (Math.abs(angle3) > Math.PI / 2) {
+      angle3 = angle3 > 0 ? angle3 - Math.PI : angle3 + Math.PI;
+      RIGHT_FRONT_DRIVE_SPEED_MOTOR.set(-Math.sqrt(Math.pow(m3.get(0), 2) + Math.pow(m3.get(1), 2)) / max);
+    } else {
+      RIGHT_FRONT_DRIVE_SPEED_MOTOR.set(Math.sqrt(Math.pow(m3.get(0), 2) + Math.pow(m3.get(1), 2)) / max);
+    }
+
+    if (Math.abs(angle4) > Math.PI / 2) {
+      angle4 = angle4 > 0 ? angle4 - Math.PI : angle4 + Math.PI;
+      RIGHT_BACK_DRIVE_SPEED_MOTOR.set(-Math.sqrt(Math.pow(m4.get(0), 2) + Math.pow(m4.get(1), 2)) / max);
+    } else {
+      RIGHT_BACK_DRIVE_SPEED_MOTOR.set(Math.sqrt(Math.pow(m4.get(0), 2) + Math.pow(m4.get(1), 2)) / max);
+    }
+
+    setLeftBackAngle(new Rotation2d(angle1));
+    setLeftFrontAngle(new Rotation2d(angle2));
+    setRightFrontAngle(new Rotation2d(angle3));
+    setRightBackAngle(new Rotation2d(angle4));
   }
 
   public void initDefaultCommand() {

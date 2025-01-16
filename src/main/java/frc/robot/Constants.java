@@ -1,13 +1,6 @@
 package frc.robot;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.swerve.SwerveModuleConstants.ClosedLoopOutputType;
-import com.ctre.phoenix6.swerve.SwerveModuleConstants.SteerFeedbackType;
-import com.ctre.phoenix6.swerve.SwerveModuleConstantsFactory;
-import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
-import com.ctre.phoenix6.swerve.SwerveModuleConstants;
-
-import edu.wpi.first.math.util.Units;
 
 public class Constants {
         // Both sets of gains need to be tuned to your individual robot.
@@ -23,13 +16,6 @@ public class Constants {
         public static final Slot0Configs driveGains = new Slot0Configs()
                         .withKP(3).withKI(0).withKD(0)
                         .withKS(0.14774).withKV(0.11330).withKA(0);
-
-        // The closed-loop output type to use for the steer motors;
-        // This affects the PID/FF gains for the steer motors
-        public static final ClosedLoopOutputType steerClosedLoopOutput = ClosedLoopOutputType.Voltage;
-        // The closed-loop output type to use for the drive motors;
-        // This affects the PID/FF gains for the drive motors
-        public static final ClosedLoopOutputType driveClosedLoopOutput = ClosedLoopOutputType.Voltage;
 
         // The stator current at which the wheels start to slip;
         // This needs to be tuned to your individual robot
@@ -51,7 +37,6 @@ public class Constants {
         public static final boolean kInvertLeftSide = false;
         public static final boolean kInvertRightSide = true;
 
-        public static final String kCANbusName = "drivetrain";
         public static final int kPigeonId = 0;
 
         // These are only used for simulation

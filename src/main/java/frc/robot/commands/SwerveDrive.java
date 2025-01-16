@@ -15,7 +15,6 @@ public class SwerveDrive extends Command {
   @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
   private final Drive m_subsystem;
   private final CommandXboxController m_driverController;
-  private Rotation2d angle;
 
   /**
    * Creates a new ExampleCommand.
@@ -36,7 +35,6 @@ public class SwerveDrive extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    angle = new Rotation2d(m_subsystem.getGyroAngle());
     m_subsystem.drive(m_driverController.getRightX(), m_driverController.getRightY(), m_driverController.getLeftY());
   }
 
