@@ -73,6 +73,7 @@ public class Drive extends SubsystemBase {
 
     // Gyro
     DRIVE_GYRO = new AHRS(NavXComType.kMXP_SPI);
+    resetGyro();
   }
 
   public void resetGyro() {
