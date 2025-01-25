@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.commands.SwerveDrive;
 
 /**
  * The methods in this class are called automatically corresponding to each
@@ -17,7 +16,7 @@ import frc.robot.commands.SwerveDrive;
  * this project, you must also update the Main.java file in the project.
  */
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
+  private Command m_teleopCommand;
 
   private final RobotContainer m_robotContainer;
 
@@ -70,18 +69,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    m_autonomousCommand.schedule();
   }
 
   @Override
@@ -90,19 +82,22 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
-    }
+    /*
+     * if (m_teleopCommand != null) {
+     * m_teleopCommand.cancel();
+     * }
+     */
+    m_teleopCommand = m_robotContainer.getTeleopCommand();
 
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+    if (m_teleopCommand != null) {
+      m_teleopCommand.schedule();
     }
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    m_autonomousCommand.schedule();
+    m_teleopCommand.schedule();
   }
 
   @Override
