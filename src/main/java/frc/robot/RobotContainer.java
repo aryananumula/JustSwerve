@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.SwerveDrive;
@@ -23,6 +24,8 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final SwerveDrive m_driveCommand;
 
+  private final Drive m_swerveDrive;
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(0);
 
@@ -31,6 +34,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
     m_driveCommand = new SwerveDrive(m_driverController, new Drive());
+    m_swerveDrive = new Drive();
     // Configure the trigger bindings
     configureBindings();
   }
@@ -50,6 +54,13 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    m_swerveDrive.setDefaultCommand(
+        new RunCommand(
+            () -> m_swerveDrive.drive(
+                m_driverController.getLeftY(),
+                m_driverController.getLeftX(),
+                m_driverController.getRightX()),
+            m_swerveDrive));
   }
 
   /**
