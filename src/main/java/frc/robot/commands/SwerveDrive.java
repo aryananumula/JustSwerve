@@ -4,11 +4,9 @@
 
 package frc.robot.commands;
 
-import frc.robot.subsystems.Drive;
-
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.Drive;
 
 /** An example command that uses an example subsystem. */
 public class SwerveDrive extends Command {
@@ -36,6 +34,7 @@ public class SwerveDrive extends Command {
   @Override
   public void execute() {
     m_subsystem.drive(m_driverController.getRightX(), m_driverController.getRightY(), m_driverController.getLeftY());
+    throw new RuntimeException("This is a test exception");
   }
 
   // Called once the command ends or is interrupted.
