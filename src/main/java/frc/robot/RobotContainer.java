@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.SwerveDrive;
 import frc.robot.subsystems.Drive;
 
 /**
@@ -22,8 +21,6 @@ import frc.robot.subsystems.Drive;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final SwerveDrive m_driveCommand;
-
   private final Drive m_swerveDrive;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -33,7 +30,6 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
-    m_driveCommand = new SwerveDrive(m_driverController, new Drive());
     m_swerveDrive = new Drive();
     // Configure the trigger bindings
     configureBindings();
@@ -69,6 +65,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getTeleopCommand() {
-    return m_driveCommand;
+    return null;
   }
 }

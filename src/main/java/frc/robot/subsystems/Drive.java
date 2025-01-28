@@ -4,14 +4,13 @@
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.studica.frc.AHRS;
-import com.studica.frc.AHRS.NavXComType;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -21,7 +20,7 @@ import frc.robot.Constants;
 /**
  * Swerve Drive subsystem
  */
-public class Drive extends SubsystemBase {
+public final class Drive extends SubsystemBase {
   public static final PIDController pid = new PIDController(2, 1, 0.1);
   // Motors
   public static TalonFX LEFT_FRONT_DRIVE_SPEED_MOTOR;
@@ -74,6 +73,8 @@ public class Drive extends SubsystemBase {
     // Gyro
     DRIVE_GYRO = new AHRS(NavXComType.kMXP_SPI);
     resetGyro();
+
+    register();
   }
 
   public void resetGyro() {
@@ -219,6 +220,8 @@ public class Drive extends SubsystemBase {
     } else {
       RIGHT_BACK_DRIVE_SPEED_MOTOR.set(Math.sqrt(Math.pow(m4.get(0), 2) + Math.pow(m4.get(1), 2)) / max);
     }
+
+    System.out.println("Max: " + max);
 
     setLeftBackAngle(new Rotation2d(angle1));
     setLeftFrontAngle(new Rotation2d(angle2));
